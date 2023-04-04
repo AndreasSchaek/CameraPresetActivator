@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--Import Google Icon Font-->
+    <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection" />
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+        const cameraIP="192.168.0.99"
+
+        function selectPTZOpticsCameraPreset(presetNumber){
+            var url = "http://" + cameraIP + "/cgi-bin/ptzctrl.cgi?ptzcmd&poscall&"+presetNumber;
+            console.log(url);
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", url, true);
+            xhr.send();
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <a class="waves-effect waves-light btn-large" onclick='selectPTZOpticsCameraPreset("1")'>Redner</a>
+            </div>
+            <div class="col">
+                <a class="waves-effect waves-light btn-large" onclick='selectPTZOpticsCameraPreset("2")'>Leser</a>
+            </div>
+            <div class="col">
+                <a class="waves-effect waves-light btn-large" onclick='selectPTZOpticsCameraPreset("3")'>Tisch</a>
+            </div>
+            <div class="col">
+                <a class="waves-effect waves-light btn-large" onclick='selectPTZOpticsCameraPreset("4")'>Totale</a>
+            </div>
+        </div>
+    <!--JavaScript at end of body for optimized loading-->
+    <script type="text/javascript" src="js/materialize.min.js"></script>
+</body>
+
+</html>
