@@ -8,21 +8,20 @@
 
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script>
-        const cameraIP="192.168.0.99"
-
-        function selectPTZOpticsCameraPreset(presetNumber){
-            var url = "http://" + cameraIP + "/cgi-bin/ptzctrl.cgi?ptzcmd&poscall&"+presetNumber;
-            console.log(url);
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", url, true);
-            xhr.send();
-        }
-    </script>
+    <style>
+      .btn-large {
+        margin-bottom: 5px;
+        margin-top: 5px;
+      }  
+    </style>
 </head>
 
 <body>
     <div class="container">
+        <div class="row">
+            <input placeholder="zB. 192.168.0.99" id="textCameraIP" type="text" class="validate" onchange='saveCameraIP(this)'>
+            <label for="textCameraIP">IP der Kamera</label>
+        </div>
         <div class="row">
             <div class="col">
                 <a class="waves-effect waves-light btn-large" onclick='selectPTZOpticsCameraPreset("1")'>Redner</a>
@@ -39,6 +38,31 @@
         </div>
     <!--JavaScript at end of body for optimized loading-->
     <script type="text/javascript" src="js/materialize.min.js"></script>
+    <script>
+        var cameraIP=localStorage.cameraIP;
+
+        function selectPTZOpticsCameraPreset(presetNumber){
+            if (cameraIP == null){
+                alert("Bitte zuerst die IP der Kamera eintragen");
+                return;
+            }
+            var url = "http://" + cameraIP + "/cgi-bin/ptzctrl.cgi?ptzcmd&poscall&"+presetNumber;
+            console.log(url);
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", url, true);
+            xhr.send();
+        }
+        function fillVariablesFromLocalStorage(){
+            if (localStorage.getItem("cameraIP") !== null) {
+                document.getElementById('textCameraIP').value=localStorage.getItem("cameraIP")
+            }
+        }
+        function saveCameraIP(input){
+            localStorage.setItem("cameraIP", input.value)
+            cameraIP=localStorage.cameraIP;
+        }
+        fillVariablesFromLocalStorage();
+    </script>
 </body>
 
 </html>
