@@ -10,37 +10,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       .btn-large {
-        margin-bottom: 5px;
-        margin-top: 5px;
+        margin: 5px;
       }  
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div class="row">
-            <input placeholder="zB. 192.168.0.99" id="textCameraIP" type="text" class="validate" onchange='saveCameraIP(this)'>
-            <label for="textCameraIP">IP der Kamera</label>
-        </div>
-        <div class="row">
-            <div class="col">
-                <a class="waves-effect waves-light btn-large" onclick='selectPTZOpticsCameraPreset("1")'>Redner</a>
-            </div>
-            <div class="col">
-                <a class="waves-effect waves-light btn-large" onclick='selectPTZOpticsCameraPreset("2")'>Leser</a>
-            </div>
-            <div class="col">
-                <a class="waves-effect waves-light btn-large" onclick='selectPTZOpticsCameraPreset("3")'>Tisch</a>
-            </div>
-            <div class="col">
-                <a class="waves-effect waves-light btn-large" onclick='selectPTZOpticsCameraPreset("4")'>Totale</a>
-            </div>
-        </div>
+        <ul class="collapsible">
+            <li>
+                <div class="collapsible-header">Konfiguration</div>
+                <div class="collapsible-body"></span>
+                    <input placeholder="zB. 192.168.0.99" id="textCameraIP" type="text" class="validate" onchange='saveCameraIP(this)'>
+                    <label for="textCameraIP">IP der Kamera</label>
+
+                    <input  id="textCameraPresets" type="text" class="validate" onchange='saveCameraPresets(this)'>
+                    <label for="textCameraPresets">Kamerabezeichnungen</label>
+                </div>
+            </li>
+            <li class="active">
+                <div class="collapsible-header">Kamera</div>
+                <div class="collapsible-body" id="divForButtons"></span>
+                </div>
+            </li>
+        </ul>
+
     <!--JavaScript at end of body for optimized loading-->
     <script type="text/javascript" src="js/materialize.min.js"></script>
     <script>
-        var cameraIP=localStorage.cameraIP;
+        var cameraIP;
+        var cameraPresets;
 
+        function initVariables(){
+            if (localStorage.getItem("cameraPresets") === null) {
+                localStorage.setItem("cameraPresets", JSON.stringify(["Redner", "Leser", "Tisch", "Totale"]));
+            }
+
+            cameraIP      = localStorage.getItem("cameraIP")
+            cameraPresets = JSON.parse(localStorage.getItem("cameraPresets"))
+
+            fillVariablesFromLocalStorage();
+            document.addEventListener('DOMContentLoaded', function() {
+                var elems = document.querySelectorAll('.collapsible');
+                var options=[];
+                var instances = M.Collapsible.init(elems, options);
+            });
+        }
+        function initPresetButtons(){
+            var divForButtons = document.getElementById('divForButtons');
+            let i = 0;
+            var innerHTML ="";
+            while (i < cameraPresets.length) {
+                innerHTML +="<a class='waves-effect waves-light btn-large' onclick='selectPTZOpticsCameraPreset("+(i+1)+")'>"+cameraPresets[i]+"</a>\r\n";
+                i++;
+            }
+            console.log(innerHTML);
+            divForButtons.innerHTML = innerHTML;
+        }
         function selectPTZOpticsCameraPreset(presetNumber){
             if (cameraIP == null){
                 alert("Bitte zuerst die IP der Kamera eintragen");
@@ -56,12 +82,21 @@
             if (localStorage.getItem("cameraIP") !== null) {
                 document.getElementById('textCameraIP').value=localStorage.getItem("cameraIP")
             }
+            if (localStorage.getItem("cameraPresets") !== null) {
+                document.getElementById('textCameraPresets').value=localStorage.getItem("cameraPresets")
+            }
         }
         function saveCameraIP(input){
             localStorage.setItem("cameraIP", input.value)
             cameraIP=localStorage.cameraIP;
         }
-        fillVariablesFromLocalStorage();
+        function saveCameraPresets(input){
+            localStorage.setItem("cameraPresets", input.value)
+            cameraPresets=localStorage.cameraPresets;
+            location.reload();
+        }
+        initVariables();
+        initPresetButtons();
     </script>
 </body>
 
